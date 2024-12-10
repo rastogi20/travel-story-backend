@@ -4,10 +4,10 @@ const path = require("path");
 // Storage configuration
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "./uploads/"); // Destination folder for storing uploaded files
+    cb(null, "./uploads"); // Destination folder for storing uploaded files
   },
   filename: function (req, file, cb) {
-    cb(null, Date.now() + path.extname(file.originalname)); // Unique filename
+    cb(null, file.originalname) // Unique filename
   },
 });
 
@@ -19,8 +19,7 @@ const fileFilter = (req, file, cb) => {
     cb(new Error("Only images are allowed"), false); // Reject file
   }
 };
-
 // Initialize multer instance
-const upload = multer({ storage, fileFilter });
+const upload = multer({ storage,});
 
 module.exports = upload;

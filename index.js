@@ -8,9 +8,11 @@ const { authenticateToken } = require('./utilities.js');
 const upload = require('./multer.js');
 const fs= require('fs');
 const path= require('path');
+const {uploadOnCloudinary} = require('./utils/cloudinary.js')
+
 
 // Connect to MongoDB
-mongoose.connect("mongodb+srv://rastogisahil20:rastogi20@traveller.iiocu.mongodb.net/mydb")
+mongoose.connect(process.env.MONGODB_URI)
   .then(() => console.log('MongoDB connected'))
   .catch((err) => console.error('MongoDB connection error:', err));
 
@@ -226,18 +228,22 @@ app.post("/add-travel-story", authenticateToken, async (req, res) => {
             return res.status(500).json({ error: true, message: error.message });
         }
     });
-    app.post('/image-upload',upload.single("image"),function(req,res){
+    app.post('/image-upload',upload.single("image"),async function(req,res){
         // Save the uploaded image to the server
         try {
+            console.log("post image")
             if (!req.file) {
               return res
                 .status(400)
                 .json({ error: true, message: "No image uploaded" });
             }
-          
-            const imageUrl = `http://localhost:8000/uploads/${req.file.filename}`;
-          
-            res.status(201).json({ imageUrl });
+            let img = req.file
+            img = img.path
+            console.log(img)
+            // const imageUrl = `http://localhost:8000/uploads/${req.file?.path}`;
+            const imageUrl = req.file?.path;
+            let imgUrl = await uploadOnCloudinary(imageUrl)
+            res.status(201).json({ imageUrl:imgUrl.url, });
           } catch (error) {
             res.status(500).json({ error: true, message: error.message });
           }
