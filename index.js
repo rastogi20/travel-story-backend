@@ -12,7 +12,7 @@ const {uploadOnCloudinary} = require('./utils/cloudinary.js')
 
 
 // Connect to MongoDB
-mongoose.connect("mongodb+srv://rastogisahil20:rastogi20@traveller.iiocu.mongodb.net/mydb")
+mongoose.connect(process.env.MONGODB_URI)
   .then(() => console.log('MongoDB connected'))
   .catch((err) => console.error('MongoDB connection error:', err));
 
